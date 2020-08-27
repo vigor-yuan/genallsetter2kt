@@ -1,19 +1,39 @@
 <idea-plugin>
     <id>com.github.tonyphoneix.genallsetter2kt</id>
-    <name>genallsetter2kt</name>
+    <name>GenAllSetter</name>
     <vendor>tonyphoneix</vendor>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
+    <actions>
+        <!-- Add your actions here -->
+        <action id="mars.GenerateAllSetterNoDefaultValue"
+                class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllSetterNoDefaultValue"
+                text="Generate All Setter Without Default Value" description="Generate all set methods">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </action>
+
+        <action id="mars.GenerateAllSetterWithDefaultValue"
+                class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllSetterWithDefaultValue"
+                text="Generate All Setter with Default Value"
+                description="Generate all set methods and add default values">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </action>
+
+        <action id="mars.GenerateAllBuilderNoDefaultValue"
+                class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllBuilderNoDefaultValue"
+                text="Generate All Builder Without Default Value" description="Generate all build methods">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </action>
+
+        <action id="mars.GenerateAllBuilderWithDefaultValue"
+                class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllBuilderWithDefaultValue"
+                text="Generate All Builder with Default Value"
+                description="Generate all build methods and add default values">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </action>
+    </actions>
+
     <depends>com.intellij.modules.platform</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.tonyphoneix.genallsetter2kt.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.tonyphoneix.genallsetter2kt.services.MyProjectService"/>
-    </extensions>
-
-    <projectListeners>
-        <listener class="com.github.tonyphoneix.genallsetter2kt.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </projectListeners>
 </idea-plugin>
