@@ -1,7 +1,7 @@
 <idea-plugin>
-    <id>com.github.tonyphoneix.genallsetter2kt</id>
+    <id>com.mars.genAllSetter.genAllSetter</id>
     <name>GenAllSetter</name>
-    <vendor>tonyphoneix</vendor>
+    <vendor email="13093687239@163.com">Mars</vendor>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
@@ -9,28 +9,28 @@
         <!-- Add your actions here -->
         <action id="mars.GenerateAllSetterNoDefaultValue"
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllSetterNoDefaultValue"
-                text="Generate All Setter Without Default Value" description="Generate all set methods">
+                text="Generate All Setter With Nothing" description="Generate all set methods">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
         </action>
 
         <action id="mars.GenerateAllSetterWithDefaultValue"
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllSetterWithDefaultValue"
-                text="Generate All Setter with Default Value"
+                text="Generate All Setter"
                 description="Generate all set methods and add default values">
-            <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <add-to-group group-id="GenerateGroup"/>
         </action>
 
         <action id="mars.GenerateAllSetterWithGetter"
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllSetterWithGetter"
                 text="Generate All Setter With Getter"
                 description="Generate all set methods and getters from context">
-            <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <add-to-group group-id="GenerateGroup"/>
         </action>
 
 
         <action id="mars.GenerateAllBuilderNoDefaultValue"
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllBuilderNoDefaultValue"
-                text="Generate All Builder Without Default Value" description="Generate all build methods">
+                text="Generate All Builder" description="Generate all build methods">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
         </action>
 
@@ -38,14 +38,14 @@
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllBuilderWithDefaultValue"
                 text="Generate All Builder with Default Value"
                 description="Generate all build methods and add default values">
-            <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <add-to-group group-id="GenerateGroup"/>
         </action>
 
         <action id="mars.GenerateAllBuilderWithGetter"
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllBuilderWithGetter"
                 text="Generate All Builder With Getter"
                 description="Generate all build methods and getters from context">
-            <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <add-to-group group-id="GenerateGroup"/>
         </action>
     </actions>
 
