@@ -108,7 +108,7 @@ class GenerateAllBuilderWithDefaultValue : BaseGenerateAllBuilder(GenCodeType.DE
 class GenerateAllBuilderWithGetter : BaseGenerateAllBuilder(GenCodeType.GETTER) {
     override fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports {
         return getters.firstOrNull {
-            it.fieldName == field.name && it.psiType == field.type
+            it.fieldName.equals(field.name, true) && it.psiType == field.type
         }?.let {
             CodeAndImports("${it.caller}.get${it.fieldName}()")
         } ?: CodeAndImports()
