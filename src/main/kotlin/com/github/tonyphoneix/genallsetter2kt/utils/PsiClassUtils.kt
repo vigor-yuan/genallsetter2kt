@@ -54,7 +54,7 @@ object PsiClassUtils {
         return psiClass.methods.filter { isValidSetMethod(it) }
     }
 
-    fun addGetMethodToList(psiClass: PsiClass): List<PsiMethod> {
+    private fun addGetMethodToList(psiClass: PsiClass): List<PsiMethod> {
         return psiClass.methods.filter { m: PsiMethod -> isValidGetMethod(m) }
     }
 
@@ -62,7 +62,9 @@ object PsiClassUtils {
         val methodList = mutableListOf<PsiMethod>()
         if (isNotSystemClass(psiClass)) {
             methodList.addAll(addSetMethodToList(psiClass))
-            psiClass.superClass?.let { extractSetMethods(it) }
+            psiClass.superClass?.let {
+                methodList.addAll(extractSetMethods(it))
+            }
         }
         return methodList
     }
@@ -71,7 +73,9 @@ object PsiClassUtils {
         val methodList = mutableListOf<PsiMethod>()
         if (isNotSystemClass(psiClass)) {
             methodList.addAll(addGetMethodToList(psiClass))
-            psiClass.superClass?.let { extractGetMethod(it) }
+            psiClass.superClass?.let {
+                methodList.addAll(extractGetMethod(it))
+            }
         }
         return methodList
     }

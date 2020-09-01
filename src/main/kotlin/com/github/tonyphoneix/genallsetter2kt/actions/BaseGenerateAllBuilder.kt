@@ -50,7 +50,9 @@ abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(code
         val getters = if (GenCodeType.GETTER == this.codeType) {
             val parameters = searchParameters(generateDTO.selectedElement)
             GenerateSetterFromParametersDialog(generateDTO.project, parameters).run {
-                if (parameters.isNotEmpty()) showAndGet()
+                if (parameters.isEmpty() || !showAndGet()) {
+                    return CodeAndImports()
+                }
                 choices
             }
         } else emptyList()
