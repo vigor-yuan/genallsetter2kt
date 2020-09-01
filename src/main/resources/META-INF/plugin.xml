@@ -22,7 +22,7 @@
 
         <action id="mars.GenerateAllSetterWithGetter"
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllSetterWithGetter"
-                text="Generate All Setter And Getter"
+                text="Generate All Setter With Getter"
                 description="Generate all set methods and getters from context">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
         </action>
@@ -38,6 +38,13 @@
                 class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllBuilderWithDefaultValue"
                 text="Generate All Builder with Default Value"
                 description="Generate all build methods and add default values">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </action>
+
+        <action id="mars.GenerateAllBuilderWithGetter"
+                class="com.github.tonyphoneix.genallsetter2kt.actions.GenerateAllBuilderWithGetter"
+                text="Generate All Builder With Getter"
+                description="Generate all build methods and getters from context">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
         </action>
     </actions>

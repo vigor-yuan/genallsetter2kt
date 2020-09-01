@@ -3,7 +3,7 @@ package com.github.tonyphoneix.genallsetter2kt.actions
 import com.github.tonyphoneix.genallsetter2kt.entity.CodeAndImports
 import com.github.tonyphoneix.genallsetter2kt.entity.ExtMethod
 import com.github.tonyphoneix.genallsetter2kt.entity.GenCodeType
-import com.github.tonyphoneix.genallsetter2kt.entity.GenerateDTO
+import com.github.tonyphoneix.genallsetter2kt.entity.SetGenerateDTO
 import com.github.tonyphoneix.genallsetter2kt.ui.GenerateSetterFromParametersDialog
 import com.github.tonyphoneix.genallsetter2kt.utils.CodeUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiClassUtils
@@ -45,7 +45,7 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
         //Separate text, used at the beginning of each line
         val splitText = PsiDocumentUtils.calculateSplitText(document, variable.parent.textOffset)
         //Generate call code and import statement code
-        genCodeAndImports(GenerateDTO(project, variable, allSetMethods, splitText, variable.name)).also {
+        genCodeAndImports(SetGenerateDTO(project, variable, allSetMethods, splitText, variable.name)).also {
             //Insert calling code safely
             document.write(project) { insertString(variable.parent.textOffset + variable.parent.textLength, it.code) }
             //Insert the import statement separately
@@ -75,23 +75,23 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
     /**
      * 生成赋值代码和import语句
      *
-     * @param generateDTO
+     * @param setGenerateDTO
      * @return
      */
-    private fun genCodeAndImports(generateDTO: GenerateDTO): CodeAndImports {
+    private fun genCodeAndImports(setGenerateDTO: SetGenerateDTO): CodeAndImports {
         val code = StringBuilder()
         //收集import语句
         val imports = mutableSetOf<String>()
         val getters = if (GenCodeType.GETTER == this.codeType) {
-            val parameters = searchParameters(generateDTO.selectedElement)
-            GenerateSetterFromParametersDialog(generateDTO.project, parameters).run {
+            val parameters = searchParameters(setGenerateDTO.selectedElement)
+            GenerateSetterFromParametersDialog(setGenerateDTO.project, parameters).run {
                 if (parameters.isNotEmpty()) showAndGet()
                 choices
             }
         } else emptyList()
-        generateDTO.methods.forEach { m ->
+        setGenerateDTO.methods.forEach { m ->
             //生成set赋值代码
-            code.append(generateDTO.splitText).append(generateDTO.variable).append('.').append(m.name).append("(")
+            code.append(setGenerateDTO.splitText).append(setGenerateDTO.variable).append('.').append(m.name).append("(")
             //解析方法的参数列表
             genCodeAndImportsFromMethod(m, getters.flatMap { it.getAllGetMethods() }).also {
                 //添加代码
@@ -143,6 +143,6 @@ class GenerateAllSetterWithGetter : BaseGenerateAllSetter(GenCodeType.GETTER) {
             it.fieldName == extSetMethod.fieldName && it.psiType == extSetMethod.psiType
         }?.let {
             CodeAndImports("${it.caller}.get${it.fieldName}()")
-        } ?: return CodeAndImports()
+        } ?: CodeAndImports()
     }
 }

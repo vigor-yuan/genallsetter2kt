@@ -1,11 +1,15 @@
 package com.github.tonyphoneix.genallsetter2kt.actions
 
+import com.github.tonyphoneix.genallsetter2kt.entity.BuilderGenerateDTO
+import com.github.tonyphoneix.genallsetter2kt.entity.CodeAndImports
+import com.github.tonyphoneix.genallsetter2kt.entity.ExtMethod
+import com.github.tonyphoneix.genallsetter2kt.entity.GenCodeType
+import com.github.tonyphoneix.genallsetter2kt.ui.GenerateSetterFromParametersDialog
 import com.github.tonyphoneix.genallsetter2kt.utils.CodeUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiClassUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiDocumentUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiElementUtils
 import com.github.tonyphoneix.genallsetter2kt.write
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.psi.PsiField
@@ -15,7 +19,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTypesUtil
 import utils.PsiToolUtils
 
-abstract class BaseGenerateAllBuilder : AnAction() {
+abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(codeType) {
 
     override fun actionPerformed(e: AnActionEvent) {
         if (!available(e)) return
@@ -31,33 +35,37 @@ abstract class BaseGenerateAllBuilder : AnAction() {
         //split text
         val splitText = PsiDocumentUtils.calculateSplitText(document, expression.textOffset) + "\t\t"
         //Generate code
-        generateCode(psiClass.fields, splitText).run {
-            document.write(project) { insertString(expression.textOffset + expression.textLength, first) }
-            PsiToolUtils.addImportToFile(project, file, document, second)
+        genCodeAndImports(BuilderGenerateDTO(project, expression, psiClass.fields.toList(), splitText)).also {
+            document.write(project) { insertString(expression.textOffset + expression.textLength, it.code) }
+            PsiToolUtils.addImportToFile(project, file, document, it.imports)
         }
     }
 
     /**
      * generate code
-     * @param fields 字段
-     * @param splitText 分割文本
      */
-    private fun generateCode(fields: Array<PsiField>, splitText: String): Pair<String, Set<String>> {
+    private fun genCodeAndImports(generateDTO: BuilderGenerateDTO): CodeAndImports {
         val code = StringBuilder()
-        val importPackages = mutableSetOf<String>()
-        fields.forEach { psiField ->
-            code.append(splitText).append('.').append(psiField.name).append("(")
-            if (hasDefaultValue()) {
-                val parameter = PsiToolUtils.extraParameterFromFullyQualifiedName(psiField.type.canonicalText)
-                CodeUtils.getDefaultValueAndDefaultImport(parameter.packagePath, parameter.className)
-                        .also { code.append(it.first) }
-                        .takeIf { CodeUtils.isNeedToDeclareClasses(it.second) }
-                        ?.also { importPackages.add(it.second) }
+        val imports = mutableSetOf<String>()
+        val getters = if (GenCodeType.GETTER == this.codeType) {
+            val parameters = searchParameters(generateDTO.selectedElement)
+            GenerateSetterFromParametersDialog(generateDTO.project, parameters).run {
+                if (parameters.isNotEmpty()) showAndGet()
+                choices
+            }
+        } else emptyList()
+        generateDTO.fields.forEach { psiField ->
+            code.append(generateDTO.splitText).append('.').append(psiField.name).append("(")
+            genCodeAndImportsFromField(psiField, getters.flatMap { it.getAllGetMethods() }).also {
+                //添加代码
+                if (it.code.isNotBlank()) code.append(it.code)
+                //添加imports
+                imports.addAll(it.imports.filter { i -> CodeUtils.isNeedToDeclareClasses(i) })
             }
             code.append(")")
         }
-        code.append(splitText).append(".build()")
-        return Pair(code.toString(), importPackages)
+        code.append(generateDTO.splitText).append(".build()")
+        return CodeAndImports(code.toString(), imports)
     }
 
     override fun update(e: AnActionEvent) {
@@ -78,17 +86,32 @@ abstract class BaseGenerateAllBuilder : AnAction() {
         }?.let { PsiTypesUtil.getPsiClass(it.returnType) }?.let { it.name?.endsWith("Builder") } ?: false
     }
 
-    protected abstract fun hasDefaultValue(): Boolean
+    abstract fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports
 }
 
-class GenerateAllBuilderWithDefaultValue : BaseGenerateAllBuilder() {
-    override fun hasDefaultValue(): Boolean {
-        return true
+class GenerateAllBuilderNoDefaultValue : BaseGenerateAllBuilder(GenCodeType.NONE) {
+    override fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports {
+        return CodeAndImports()
+    }
+
+}
+
+class GenerateAllBuilderWithDefaultValue : BaseGenerateAllBuilder(GenCodeType.DEFAULT) {
+    override fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports {
+        val parameter = PsiToolUtils.extraParameterFromFullyQualifiedName(field.type.canonicalText)
+        return CodeUtils.getDefaultValueAndDefaultImport(parameter.packagePath, parameter.className).let {
+            CodeAndImports(it.first, setOf(it.second))
+        }
     }
 }
 
-class GenerateAllBuilderNoDefaultValue : BaseGenerateAllBuilder() {
-    override fun hasDefaultValue(): Boolean {
-        return false
+class GenerateAllBuilderWithGetter : BaseGenerateAllBuilder(GenCodeType.GETTER) {
+    override fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports {
+        return getters.firstOrNull {
+            it.fieldName == field.name && it.psiType == field.type
+        }?.let {
+            CodeAndImports("${it.caller}.get${it.fieldName}()")
+        } ?: CodeAndImports()
     }
+
 }
