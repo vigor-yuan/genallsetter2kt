@@ -49,7 +49,7 @@ intellij {
     version = platformVersion
     type = platformType
     downloadSources = platformDownloadSources.toBoolean()
-    updateSinceUntilBuild = true
+    updateSinceUntilBuild = false
 
 //  Plugin Dependencies:
 //  https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
@@ -89,7 +89,6 @@ tasks {
     patchPluginXml {
         version(pluginVersion)
         sinceBuild(pluginSinceBuild)
-        untilBuild(pluginUntilBuild)
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription(

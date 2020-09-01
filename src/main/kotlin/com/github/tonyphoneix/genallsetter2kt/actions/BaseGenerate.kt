@@ -30,7 +30,7 @@ abstract class BaseGenerate(val codeType: GenCodeType) : AnAction() {
                     stopWalking()
                     return
                 }
-                variable?.also { parameters.add(ParameterValue(it.name, it.typeElement)) }
+                variable?.also { parameters.add(ParameterValue(it.name, it.type)) }
                 super.visitLocalVariable(variable)
             }
 
@@ -39,7 +39,7 @@ abstract class BaseGenerate(val codeType: GenCodeType) : AnAction() {
                     stopWalking()
                     return
                 }
-                list?.parameters?.forEach { parameters.add(ParameterValue(it.name, it.typeElement!!)) }
+                list?.parameters?.forEach { parameters.add(ParameterValue(it.name, it.type)) }
                 super.visitParameterList(list)
             }
         })

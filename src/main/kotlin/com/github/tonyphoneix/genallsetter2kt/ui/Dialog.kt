@@ -26,7 +26,7 @@ class GenerateSetterFromParametersDialog(project: Project,
             noteRow("Check the parameters that need to be generated for \n the get method, multiple choices are available")
             this@GenerateSetterFromParametersDialog.parameters.forEach {
                 row {
-                    checkBox("${it.caller} : ${it.typeElement.text}") { _, component ->
+                    checkBox("${it.caller} : ${it.type.presentableText}") { _, component ->
                         if (component.isSelected) choices.add(it) else choices.remove(it)
                     }
                 }
