@@ -3,7 +3,9 @@ package com.github.tonyphoneix.genallsetter2kt.ui
 import com.github.tonyphoneix.genallsetter2kt.entity.ParameterValue
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.layout.panel
+import wu.seal.jsontokotlin.ui.checkBox
+import wu.seal.jsontokotlin.ui.label
+import wu.seal.jsontokotlin.ui.verticalLinearLayout
 import javax.swing.JComponent
 
 
@@ -22,14 +24,14 @@ class GenerateSetterFromParametersDialog(project: Project,
     }
 
     override fun createCenterPanel(): JComponent? {
-        return panel {
-            noteRow("Check the parameters that need to be generated for \n the get method, multiple choices are available")
+        return verticalLinearLayout {
+            fixedSpace(5)
+            label("<html>Check the parameters that need to be generated for <br>" +
+                    " the get method, multiple choices are available</html>")()
             this@GenerateSetterFromParametersDialog.parameters.forEach {
-                row {
-                    checkBox("${it.caller} : ${it.type.presentableText}") { _, component ->
-                        if (component.isSelected) choices.add(it) else choices.remove(it)
-                    }
-                }
+                checkBox("${it.caller} : ${it.type.presentableText}") { isSelected ->
+                    if (isSelected) choices.add(it) else choices.remove(it)
+                }()
             }
         }
     }
