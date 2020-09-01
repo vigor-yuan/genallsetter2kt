@@ -38,8 +38,9 @@ abstract class BaseGenerateAllBuilder : AnAction() {
     }
 
     /**
-     * @param fields
-     * @param splitText
+     * generate code
+     * @param fields 字段
+     * @param splitText 分割文本
      */
     private fun generateCode(fields: Array<PsiField>, splitText: String): Pair<String, Set<String>> {
         val code = StringBuilder()
@@ -47,7 +48,7 @@ abstract class BaseGenerateAllBuilder : AnAction() {
         fields.forEach { psiField ->
             code.append(splitText).append('.').append(psiField.name).append("(")
             if (hasDefaultValue()) {
-                val parameter = PsiToolUtils.extraParmaterFromFullyQualifiedName(psiField.type.canonicalText)
+                val parameter = PsiToolUtils.extraParameterFromFullyQualifiedName(psiField.type.canonicalText)
                 CodeUtils.getDefaultValueAndDefaultImport(parameter.packagePath, parameter.className)
                         .also { code.append(it.first) }
                         .takeIf { CodeUtils.isNeedToDeclareClasses(it.second) }

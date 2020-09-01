@@ -5,56 +5,57 @@ object CodeUtils {
     private val staticTypes = listOf("boolean", "byte", "int", "short", "long", "float", "double", "char")
 
     private val defaultValueMap = mapOf(
-            Pair("boolean", "false"),
-            Pair("java.lang.Boolean", "false"),
-            Pair("int", "0"),
-            Pair("byte", "(byte)0"),
-            Pair("java.lang.Byte", "(byte)0"),
-            Pair("java.lang.Integer", "0"),
-            Pair("java.lang.String", "\"\""),
-            Pair("java.math.BigDecimal", "new BigDecimal(\"0\")"),
-            Pair("java.lang.Long", "0L"),
-            Pair("long", "0L"),
-            Pair("short", "(short)0"),
-            Pair("java.lang.Short", "(short)0"),
-            Pair("java.util.Date", "new Date()"),
-            Pair("float", "0.0F"),
-            Pair("java.lang.Float", "0.0F"),
-            Pair("double", "0.0D"),
-            Pair("java.lang.Double", "0.0D"),
-            Pair("java.lang.Character", "\'\'"),
-            Pair("char", "\'\'"),
-            Pair("java.time.LocalDateTime", "LocalDateTime.now()"),
-            Pair("java.time.LocalDate", "LocalDate.now()"),
-            Pair("java.time.OffsetDateTime", "OffsetDateTime.now()"),
-            Pair("java.util.Optional", "Optional.empty()"),
-            Pair("java.util.List", "new ArrayList()"),
-            Pair("java.util.ArrayList", "new ArrayList()"),
-            Pair("java.util.Collection", "new ArrayList()"),
-            Pair("java.util.Set", "new HashSet()"),
-            Pair("java.util.HashSet", "new HashSet()"),
-            Pair("java.util.Map", "new HashMap()"),
-            Pair("java.util.HashMap", "new HashMap()"))
+            "boolean" to "false",
+            "java.lang.Boolean" to "false",
+            "int" to "0",
+            "byte" to "(byte)0",
+            "java.lang.Byte" to "(byte)0",
+            "java.lang.Integer" to "0",
+            "java.lang.String" to "\"\"",
+            "java.math.BigDecimal" to "new BigDecimal(\"0\")",
+            "java.lang.Long" to "0L",
+            "long" to "0L",
+            "short" to "(short)0",
+            "java.lang.Short" to "(short)0",
+            "java.util.Date" to "new Date()",
+            "float" to "0.0F",
+            "java.lang.Float" to "0.0F",
+            "double" to "0.0D",
+            "java.lang.Double" to "0.0D",
+            "java.lang.Character" to "\'\'",
+            "char" to "\'\'",
+            "java.time.LocalDateTime" to "LocalDateTime.now()",
+            "java.time.LocalDate" to "LocalDate.now()",
+            "java.time.OffsetDateTime" to "OffsetDateTime.now()",
+            "java.util.Optional" to "Optional.empty()",
+            "java.util.List" to "new ArrayList()",
+            "java.util.ArrayList" to "new ArrayList()",
+            "java.util.Collection" to "new ArrayList()",
+            "java.util.Set" to "new HashSet()",
+            "java.util.HashSet" to "new HashSet()",
+            "java.util.Map" to "new HashMap()",
+            "java.util.HashMap" to "new HashMap()")
 
     private val defaultImports: Map<String, String> = mapOf(
-            Pair("java.util.List", "java.util.ArrayList"),
-            Pair("java.util.Set", "java.util.HashSet"),
-            Pair("java.util.Map", "java.util.HashMap"))
+            "java.util.List" to "java.util.ArrayList",
+            "java.util.Set" to "java.util.HashSet",
+            "java.util.Map" to "java.util.HashMap")
 
     /**
      * Get the default implementation and package through the class declaration path
      *
      * @param packagePath
+     * @param className
      * @return
      */
     fun getDefaultValueAndDefaultImport(packagePath: String, className: String): Pair<String, String> {
         val value = defaultValueMap[packagePath]
-        if (packagePath.isBlank() || value.isNullOrBlank()) return Pair("new $className()", packagePath)
+        if (packagePath.isBlank() || value.isNullOrBlank()) return "new $className()" to packagePath
         val defaultImport = defaultImports[packagePath] ?: packagePath
-        return Pair(value, defaultImport)
+        return value to defaultImport
     }
 
     fun isNeedToDeclareClasses(packagePath: String): Boolean {
-        return !(packagePath.startsWith("java.lang") || staticTypes.contains(packagePath))
+        return !(packagePath.isBlank() || packagePath.startsWith("java.lang") || staticTypes.contains(packagePath))
     }
 }

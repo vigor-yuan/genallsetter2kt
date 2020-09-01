@@ -17,12 +17,8 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
 
-/**
- * @Author bruce.ge
- * @Date 2017/1/30
- * @Description
- */
 object PsiClassUtils {
+
     private fun isNotSystemClass(psiClass: PsiClass): Boolean {
         return psiClass.qualifiedName?.let { !it.startsWith("java.") } ?: false
     }
@@ -33,24 +29,34 @@ object PsiClassUtils {
                 && m.name.startsWith("set")
     }
 
-    //    fun isValidGetMethod(m: PsiMethod): Boolean {
-//        return m.hasModifierProperty(PsiModifier.PUBLIC) && !m.hasModifierProperty(PsiModifier.STATIC) &&
-//                (m.getName().startsWith("get") || m.getName().startsWith("is"))
-//    }
-//
+    fun getFieldNameFromSetMethod(m: PsiMethod): String? {
+        return if (isValidSetMethod(m)) m.name.substringAfter("set") else null
+    }
+
+    fun getFieldNameFromGetMethod(m: PsiMethod): String? {
+        return if (isValidGetMethod(m)) {
+            m.name.substringAfter("get", "").ifBlank { m.name.substringAfter("is") }
+        } else null
+    }
+
+
+    fun isValidGetMethod(m: PsiMethod): Boolean {
+        return m.hasModifierProperty(PsiModifier.PUBLIC) && !m.hasModifierProperty(PsiModifier.STATIC) &&
+                (m.name.startsWith("get") || m.name.startsWith("is"))
+    }
+
     fun isValidBuilderMethod(m: PsiMethod): Boolean {
-        return m.hasModifierProperty(PsiModifier.PUBLIC) && m.hasModifierProperty(PsiModifier.STATIC) && "builder" == m.name
+        return m.hasModifierProperty(PsiModifier.PUBLIC) && m.hasModifierProperty(PsiModifier.STATIC) &&
+                "builder" == m.name
     }
 
     private fun addSetMethodToList(psiClass: PsiClass): List<PsiMethod> {
         return psiClass.methods.filter { isValidSetMethod(it) }
     }
 
-//    fun addGettMethodToList(psiClass: PsiClass): List<PsiMethod> {
-//        return Arrays.stream(psiClass.getMethods())
-//                .filter({ obj: PsiClassUtils?, m: PsiMethod -> isValidGetMethod(m) })
-//                .collect(Collectors.toList())
-//    }
+    fun addGetMethodToList(psiClass: PsiClass): List<PsiMethod> {
+        return psiClass.methods.filter { m: PsiMethod -> isValidGetMethod(m) }
+    }
 
     fun extractSetMethods(psiClass: PsiClass): List<PsiMethod> {
         val methodList = mutableListOf<PsiMethod>()
@@ -61,36 +67,29 @@ object PsiClassUtils {
         return methodList
     }
 
-//    fun extractGetMethod(psiClass: PsiClass): List<PsiMethod> {
-//        var psiClass: PsiClass = psiClass
-//        val methodList: List<PsiMethod> = ArrayList<PsiMethod>()
-//        while (isNotSystemClass(psiClass)) {
-//            addGettMethodToList(psiClass)
-//            psiClass = psiClass.getSuperClass()
-//        }
-//        return methodList
-//    }
+    fun extractGetMethod(psiClass: PsiClass): List<PsiMethod> {
+        val methodList = mutableListOf<PsiMethod>()
+        if (isNotSystemClass(psiClass)) {
+            methodList.addAll(addGetMethodToList(psiClass))
+            psiClass.superClass?.let { extractGetMethod(it) }
+        }
+        return methodList
+    }
 
     /**
-     * 检查文件中是否存在set方法
+     * 检查PsiClass中是否存在set方法
      */
     fun checkClassHasValidSetMethod(psiClass: PsiClass): Boolean {
         return if (isNotSystemClass(psiClass) && psiClass.methods.any { isValidSetMethod(it) }) true
-        else {
-            psiClass.superClass?.let { checkClassHasValidSetMethod(it) } ?: false
-        }
+        else psiClass.superClass?.let { checkClassHasValidSetMethod(it) } ?: false
+
     }
 
-//    fun checkClasHasValidGetMethod(psiClass: PsiClass?): Boolean {
-//        var psiClass: PsiClass = psiClass ?: return false
-//        while (isNotSystemClass(psiClass)) {
-//            for (m in psiClass.getMethods()) {
-//                if (isValidGetMethod(m)) {
-//                    return true
-//                }
-//            }
-//            psiClass = psiClass.getSuperClass()
-//        }
-//        return false
-//    }
+    /**
+     * 检查PsiClass中是否存在get方法
+     */
+    fun checkClassHasValidGetMethod(psiClass: PsiClass): Boolean {
+        return if (isNotSystemClass(psiClass) && psiClass.methods.any { isValidGetMethod(it) }) true
+        else psiClass.superClass?.let { checkClassHasValidGetMethod(it) } ?: false
+    }
 }

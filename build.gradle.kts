@@ -32,7 +32,8 @@ val platformDownloadSources: String by project
 group = pluginGroup
 version = pluginVersion
 
-// Configure project's dependencies
+// Configure project's
+// dependencies
 repositories {
     mavenCentral()
     jcenter()

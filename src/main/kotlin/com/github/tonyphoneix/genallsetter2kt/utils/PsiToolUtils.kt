@@ -15,7 +15,7 @@ object PsiToolUtils {
      * @param fullyQualifiedName
      * @return
      */
-    fun extraParmaterFromFullyQualifiedName(fullyQualifiedName: String): Parameter {
+    fun extraParameterFromFullyQualifiedName(fullyQualifiedName: String): Parameter {
         val u = fullyQualifiedName.indexOf("<")
         return if (fullyQualifiedName.indexOf("<") == -1) {
             Parameter(fullyQualifiedName, extractShortName(fullyQualifiedName))
