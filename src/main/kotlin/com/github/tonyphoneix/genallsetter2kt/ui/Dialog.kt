@@ -25,7 +25,7 @@ class GenerateSetterFromParametersDialog(project: Project,
     override fun createCenterPanel(): JComponent? {
         return verticalLinearLayout {
             label("<html>Check the parameters that need to be generated for <br>" +
-                    " the get method, multiple choices are available</html>").putAlignLeft()
+                    " the get method, multiple choices are available.</html>").putAlignLeft()
             val ps = this@GenerateSetterFromParametersDialog.parameters
             ps.forEach {
                 checkBox("${it.caller} : ${it.type.presentableText}", ps.size == 1) { isSelected ->
