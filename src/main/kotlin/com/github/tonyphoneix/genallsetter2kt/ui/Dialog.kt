@@ -28,11 +28,13 @@ class GenerateSetterFromParametersDialog(project: Project,
             fixedSpace(5)
             label("<html>Check the parameters that need to be generated for <br>" +
                     " the get method, multiple choices are available</html>")()
-            this@GenerateSetterFromParametersDialog.parameters.forEach {
-                checkBox("${it.caller} : ${it.type.presentableText}") { isSelected ->
+            val ps = this@GenerateSetterFromParametersDialog.parameters
+            ps.forEach {
+                checkBox("${it.caller} : ${it.type.presentableText}", ps.size == 1) { isSelected ->
                     if (isSelected) choices.add(it) else choices.remove(it)
                 }()
             }
+            if (ps.size == 1) choices.add(ps.first())
         }
     }
 }
