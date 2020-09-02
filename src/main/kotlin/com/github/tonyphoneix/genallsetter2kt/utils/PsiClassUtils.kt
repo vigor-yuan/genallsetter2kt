@@ -1,16 +1,3 @@
-/*
- *  Copyright (c) 2017-2019, bruce.ge.
- *    This program is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU General Public License
- *    as published by the Free Software Foundation; version 2 of
- *    the License.
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *    GNU General Public License for more details.
- *    You should have received a copy of the GNU General Public License
- *    along with this program;
- */
 package com.github.tonyphoneix.genallsetter2kt.utils
 
 import com.intellij.psi.PsiClass
@@ -81,7 +68,7 @@ object PsiClassUtils {
     }
 
     /**
-     * 检查PsiClass中是否存在set方法
+     * Check if the set method exists in Psi Class
      */
     fun checkClassHasValidSetMethod(psiClass: PsiClass): Boolean {
         return if (isNotSystemClass(psiClass) && psiClass.methods.any { isValidSetMethod(it) }) true
@@ -90,7 +77,7 @@ object PsiClassUtils {
     }
 
     /**
-     * 检查PsiClass中是否存在get方法
+     * Check if there is a get method in Psi Class
      */
     fun checkClassHasValidGetMethod(psiClass: PsiClass): Boolean {
         return if (isNotSystemClass(psiClass) && psiClass.methods.any { isValidGetMethod(it) }) true

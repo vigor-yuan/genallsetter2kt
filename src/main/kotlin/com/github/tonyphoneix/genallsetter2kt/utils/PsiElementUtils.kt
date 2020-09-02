@@ -6,7 +6,7 @@ import com.intellij.psi.PsiFile
 
 object PsiElementUtils {
     /**
-     * 获取光标处的元素
+     * Get the element at the cursor
      *
      * @param editor
      * @param file

@@ -10,7 +10,7 @@ import com.intellij.psi.PsiJavaFile
 object PsiToolUtils {
 
     /**
-     * 通过参数的全限定名称来分解出需要的路径和类名
+     * Decompose the required path and class name through the fully qualified name of the parameter
      *
      * @param fullyQualifiedName
      * @return
@@ -28,7 +28,7 @@ object PsiToolUtils {
     }
 
     /**
-     * 把imports 插入文件头中
+     * Insert imports code into the file header
      *
      * @param file
      * @param document
