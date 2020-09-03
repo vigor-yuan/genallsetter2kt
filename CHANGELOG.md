@@ -1,4 +1,9 @@
-# Changelog
+# GenALlSetter Changelog
+
+## [Unreleased]
+### Changed
+- Noting
+
 ## [2.0.0] - 2020-09-03
 ### Added
 - 支持从方法内搜寻可以生成get方法的对象，填充到set赋值语句中。
