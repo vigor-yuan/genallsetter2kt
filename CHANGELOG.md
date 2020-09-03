@@ -1,7 +1,7 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# genallsetter2kt Changelog
+# GenAllSetter Changelog
 
-## [Unreleased]
+## 20200902 [2.0.0] realse
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+- Add the function of generating get method from parameters
