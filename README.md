@@ -3,9 +3,9 @@
 ![Build](https://github.com/TonyPhoneix/genallsetter2kt/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/13688-genallsetter.svg)](https://plugins.jetbrains.com/plugin/13688-genallsetter)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/13688-genallsetter.svg)](https://plugins.jetbrains.com/plugin/13688-genallsetter)
-
+<!-- Plugin description -->
 这是一个快速调用Java对象的所有Set方法的插件，它可以让你告别手动挨个调用赋值语句的痛苦，避免遗落并可以减少工作量。注意，该插件仅适用于Android Studio 和 Intellij IDEA。
-
+<!-- Plugin description end -->
 ## Installation
 
 - Using IDE built-in plugin system:
