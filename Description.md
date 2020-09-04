@@ -1,24 +1,10 @@
-# GenAllSetter
-
-![Build](https://github.com/TonyPhoneix/genallsetter2kt/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/13688-genallsetter.svg)](https://plugins.jetbrains.com/plugin/13688-genallsetter)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/13688-genallsetter.svg)](https://plugins.jetbrains.com/plugin/13688-genallsetter)
+<!-- Plugin description -->
+#GenAllSetter
+[Github](https://github.com/TonyPhoneix/genallsetter2kt) | [Issue](https://github.com/TonyPhoneix/genallsetter2kt/issues)
 
 这是一个快速调用Java对象的所有Set方法的插件，它可以让你告别手动挨个调用赋值语句的痛苦，避免遗落并可以减少工作量。注意，该插件仅适用于Android Studio 和 Intellij IDEA。
 
-## Installation
-
-- Using IDE built-in plugin system:
-  
-  <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "GenAllSetter"</kbd> >
-  <kbd>Install Plugin</kbd>
-  
-- Manually:
-
-  Download the [latest release](https://github.com/TonyPhoneix/genallsetter2kt/releases/latest) and install it manually using
-  <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-  
-## Usage
+## 使用
 
 ### 热键
 
@@ -52,9 +38,8 @@
 
 ![ezgif.com-video-to-gif](https://tva1.sinaimg.cn/large/007S8ZIlgy1gidejc9wr1g30go0km4l3.gif)
 
-
-
 ### 如果你觉得这个插件不错的话？
 
-- 请给我个小星星
+- 请在 [Github](https://github.com/TonyPhoneix/genallsetter2kt) 上给我个小星星
 - 分享给别人，让更多人知道这个插件。
+<!-- Plugin description end -->
