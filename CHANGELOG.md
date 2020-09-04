@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 ### Changed
-- Nothing
+- 确定插件icon，添加描述信息
 
 ## [2.0.0] - 2020-09-03
 ### Added
