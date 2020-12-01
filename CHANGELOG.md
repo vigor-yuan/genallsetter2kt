@@ -4,6 +4,10 @@
 ### Changed
 - Determine the plug-in icon, add description information
 
+## [2.0.1] - 2020-12-01
+### fixed
+- fix type forced transfer exception
+
 ## [2.0.1] - 2020-09-04
 ### Added
 - Add icon and dark style icon

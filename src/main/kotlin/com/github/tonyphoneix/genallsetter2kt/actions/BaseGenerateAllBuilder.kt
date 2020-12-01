@@ -77,7 +77,7 @@ abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(code
     private fun available(e: AnActionEvent): Boolean {
         val project = e.project
         val editor = e.getData(PlatformDataKeys.EDITOR)
-        val file = e.getData(PlatformDataKeys.PSI_FILE) as PsiJavaFile?
+        val file = e.getData(PlatformDataKeys.PSI_FILE) as? PsiJavaFile
         if (project == null || editor == null || file == null) {
             return false
         }
