@@ -8,7 +8,11 @@ import com.intellij.psi.util.PsiTypesUtil
 /**
  * Disassembly of method parameters
  */
-data class Parameter(var packagePath: String = "", var className: String = "", var genericParameters: List<GenericParameter> = emptyList())
+data class Parameter(
+    var packagePath: String = "",
+    var className: String = "",
+    var genericParameters: List<GenericParameter> = emptyList()
+)
 
 /**
  * Package name disassembly

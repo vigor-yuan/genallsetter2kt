@@ -13,7 +13,7 @@ abstract class BaseGenerate(val codeType: GenCodeType) : AnAction() {
      */
     protected fun searchParameters(element: PsiElement): List<ParameterValue> {
         val psiMethod = PsiTreeUtil.getParentOfType(element, PsiMethod::class.java)
-                ?: return emptyList()
+            ?: return emptyList()
         val parameters = mutableListOf<ParameterValue>()
         //1. Search for local variables 2. Search for parameters
         psiMethod.accept(object : JavaRecursiveElementWalkingVisitor() {

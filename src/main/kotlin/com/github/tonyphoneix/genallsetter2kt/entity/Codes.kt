@@ -10,16 +10,20 @@ import com.intellij.psi.PsiType
 
 data class CodeAndImports(val code: String = "", val imports: Set<String> = emptySet())
 
-data class SetGenerateDTO(val project: Project,
-                          val selectedElement: PsiElement,
-                          val methods: List<PsiMethod>,
-                          val splitText: String,
-                          val variable: String = "")
+data class SetGenerateDTO(
+    val project: Project,
+    val selectedElement: PsiElement,
+    val methods: List<PsiMethod>,
+    val splitText: String,
+    val variable: String = ""
+)
 
-data class BuilderGenerateDTO(val project: Project,
-                              val selectedElement: PsiElement,
-                              val fields: List<PsiField>,
-                              val splitText: String)
+data class BuilderGenerateDTO(
+    val project: Project,
+    val selectedElement: PsiElement,
+    val fields: List<PsiField>,
+    val splitText: String
+)
 
 /**
  *  拆解method

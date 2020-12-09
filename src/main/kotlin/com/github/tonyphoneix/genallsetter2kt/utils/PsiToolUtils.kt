@@ -22,7 +22,7 @@ object PsiToolUtils {
         } else {
             val packagePath = fullyQualifiedName.substring(0, u)
             val genericParamaters = fullyQualifiedName.substring(u + 1, fullyQualifiedName.length - 1)
-                    .split(',').map { GenericParameter(extractShortName(it), it) }
+                .split(',').map { GenericParameter(extractShortName(it), it) }
             Parameter(packagePath, extractShortName(packagePath), genericParamaters)
         }
     }

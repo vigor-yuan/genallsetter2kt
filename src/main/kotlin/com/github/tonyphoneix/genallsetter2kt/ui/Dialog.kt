@@ -7,8 +7,10 @@ import wu.seal.jsontokotlin.ui.*
 import javax.swing.JComponent
 
 
-class GenerateSetterFromParametersDialog(project: Project,
-                                         private val parameters: List<ParameterValue>) : DialogWrapper(project) {
+class GenerateSetterFromParametersDialog(
+    project: Project,
+    private val parameters: List<ParameterValue>
+) : DialogWrapper(project) {
 
     /**
      * Selected result
@@ -22,10 +24,12 @@ class GenerateSetterFromParametersDialog(project: Project,
         if (parameters.size == 1) choices.add(parameters.first())
     }
 
-    override fun createCenterPanel(): JComponent? {
+    override fun createCenterPanel(): JComponent {
         return verticalLinearLayout {
-            label("<html>Check the parameters that need to be generated for <br>" +
-                    " the get method, multiple choices are available.</html>").putAlignLeft()
+            label(
+                "<html>Check the parameters that need to be generated for <br>" +
+                        " the get method, multiple choices are available.</html>"
+            ).putAlignLeft()
             val ps = this@GenerateSetterFromParametersDialog.parameters
             ps.forEach {
                 checkBox("${it.caller} : ${it.type.presentableText}", ps.size == 1) { isSelected ->

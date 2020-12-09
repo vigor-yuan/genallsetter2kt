@@ -39,7 +39,7 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
         val document = editor.document
         //Find declared variable
         val variable = PsiElementUtils.getElement(editor, file)
-                .let { PsiTreeUtil.getParentOfType(it, PsiLocalVariable::class.java) }!!
+            .let { PsiTreeUtil.getParentOfType(it, PsiLocalVariable::class.java) }!!
         //Get the variable type PsiClass, and then get all the set methods of PsiClass
         val allSetMethods = PsiClassUtils.extractSetMethods(PsiTypesUtil.getPsiClass(variable.type)!!)
         //Separate text, used at the beginning of each line
@@ -111,16 +111,20 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
 
 class GenerateAllSetterNoDefaultValue : BaseGenerateAllSetter(GenCodeType.NONE) {
 
-    override fun genCodeAndImportsFromMethod(method: PsiMethod,
-                                             getters: List<ExtMethod>): CodeAndImports {
+    override fun genCodeAndImportsFromMethod(
+        method: PsiMethod,
+        getters: List<ExtMethod>
+    ): CodeAndImports {
         return CodeAndImports()
     }
 }
 
 class GenerateAllSetterWithDefaultValue : BaseGenerateAllSetter(GenCodeType.DEFAULT) {
 
-    override fun genCodeAndImportsFromMethod(method: PsiMethod,
-                                             getters: List<ExtMethod>): CodeAndImports {
+    override fun genCodeAndImportsFromMethod(
+        method: PsiMethod,
+        getters: List<ExtMethod>
+    ): CodeAndImports {
         val imports = mutableSetOf<String>()
         val code = StringBuilder()
         val parameters = method.parameterList.parameters
@@ -138,8 +142,10 @@ class GenerateAllSetterWithDefaultValue : BaseGenerateAllSetter(GenCodeType.DEFA
 
 class GenerateAllSetterWithGetter : BaseGenerateAllSetter(GenCodeType.GETTER) {
 
-    override fun genCodeAndImportsFromMethod(method: PsiMethod,
-                                             getters: List<ExtMethod>): CodeAndImports {
+    override fun genCodeAndImportsFromMethod(
+        method: PsiMethod,
+        getters: List<ExtMethod>
+    ): CodeAndImports {
         val extSetMethod = ExtMethod.extSetMethod(psiMethod = method) ?: return CodeAndImports()
         return getters.firstOrNull {
             it.fieldName == extSetMethod.fieldName && it.psiType == extSetMethod.psiType

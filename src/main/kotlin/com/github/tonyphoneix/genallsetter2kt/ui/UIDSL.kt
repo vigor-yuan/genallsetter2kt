@@ -225,7 +225,13 @@ fun icon(iconPath: String): JLabel {
 /**
  * generate a link component
  */
-fun link(text: String, linkURL: String, linkURLColor: String = "#5597EB", maxSize: JBDimension? = null, onclick: () -> Unit = {}): JLabel {
+fun link(
+    text: String,
+    linkURL: String,
+    linkURLColor: String = "#5597EB",
+    maxSize: JBDimension? = null,
+    onclick: () -> Unit = {}
+): JLabel {
     return JLabel("<html><a href='$linkURL'><font color=\"$linkURLColor\">$text</font></a></html>").apply {
         if (maxSize != null) {
             maximumSize = maxSize
@@ -285,7 +291,13 @@ fun textInput(initText: String, enabled: Boolean = true, onFocusLost: (textInput
 /**
  * generate multiple lines text input component
  */
-fun textAreaInput(initText: String, size: JBDimension = JBDimension(400, 50), enabled: Boolean = true, textLanguageType: LanguageFileType = PlainTextFileType.INSTANCE, onFocusLost: (textAreaInput: Document) -> Unit): JComponent {
+fun textAreaInput(
+    initText: String,
+    size: JBDimension = JBDimension(400, 50),
+    enabled: Boolean = true,
+    textLanguageType: LanguageFileType = PlainTextFileType.INSTANCE,
+    onFocusLost: (textAreaInput: Document) -> Unit
+): JComponent {
     val editorFactory = EditorFactory.getInstance()
     val document = editorFactory.createDocument("").apply {
         setReadOnly(false)
@@ -311,7 +323,11 @@ fun textAreaInput(initText: String, size: JBDimension = JBDimension(400, 50), en
 /**
  * generate radio button component
  */
-fun radioButton(text: String, selected: Boolean = false, onclick: (isSelectedAfterClick: Boolean) -> Unit): JRadioButton {
+fun radioButton(
+    text: String,
+    selected: Boolean = false,
+    onclick: (isSelectedAfterClick: Boolean) -> Unit
+): JRadioButton {
     return JRadioButton(text).apply {
         isSelected = selected
         addActionListener {
