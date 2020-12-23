@@ -12,8 +12,8 @@ import com.github.tonyphoneix.genallsetter2kt.utils.PsiElementUtils
 import com.github.tonyphoneix.genallsetter2kt.write
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.psi.PsiField
 import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiMethodCallExpression
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTypesUtil
@@ -35,7 +35,13 @@ abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(code
         //split text
         val splitText = PsiDocumentUtils.calculateSplitText(document, expression.textOffset) + "\t\t"
         //Generate code
-        genCodeAndImports(BuilderGenerateDTO(project, expression, psiClass.fields.toList(), splitText)).also {
+        val generateDTO = BuilderGenerateDTO(
+            project,
+            expression,
+            psiClass.methods.filterNot { it.parameterList.isEmpty }.toList(),
+            splitText
+        )
+        genCodeAndImports(generateDTO).also {
             document.write(project) { insertString(expression.textOffset + expression.textLength, it.code) }
             PsiToolUtils.addImportToFile(project, file, document, it.imports)
         }
@@ -56,9 +62,9 @@ abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(code
                 choices
             }
         } else emptyList()
-        generateDTO.fields.forEach { psiField ->
-            code.append(generateDTO.splitText).append('.').append(psiField.name).append("(")
-            genCodeAndImportsFromField(psiField, getters.flatMap { it.getAllGetMethods() }).also {
+        generateDTO.methods.forEach { psiMethod ->
+            code.append(generateDTO.splitText).append('.').append(psiMethod.name).append("(")
+            genCodeAndImportsFromMethod(psiMethod, getters.flatMap { it.getAllGetMethods() }).also {
                 //添加代码
                 if (it.code.isNotBlank()) code.append(it.code)
                 //添加imports
@@ -88,29 +94,37 @@ abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(code
         }?.let { PsiTypesUtil.getPsiClass(it.returnType) }?.let { it.name?.endsWith("Builder") } ?: false
     }
 
-    abstract fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports
+    abstract fun genCodeAndImportsFromMethod(method: PsiMethod, getters: List<ExtMethod>): CodeAndImports
 }
 
 class GenerateAllBuilderNoDefaultValue : BaseGenerateAllBuilder(GenCodeType.NONE) {
-    override fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports {
+    override fun genCodeAndImportsFromMethod(method: PsiMethod, getters: List<ExtMethod>): CodeAndImports {
         return CodeAndImports()
     }
 
 }
 
 class GenerateAllBuilderWithDefaultValue : BaseGenerateAllBuilder(GenCodeType.DEFAULT) {
-    override fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports {
-        val parameter = PsiToolUtils.extraParameterFromFullyQualifiedName(field.type.canonicalText)
-        return CodeUtils.getDefaultValueAndDefaultImport(parameter.packagePath, parameter.className).let {
-            CodeAndImports(it.first, setOf(it.second))
+    override fun genCodeAndImportsFromMethod(method: PsiMethod, getters: List<ExtMethod>): CodeAndImports {
+        val imports = mutableSetOf<String>()
+        val code = StringBuilder()
+        val parameters = method.parameterList.parameters
+        parameters.forEachIndexed { i, psiParameter ->
+            //解析参数类名称
+            val parameter = PsiToolUtils.extraParameterFromFullyQualifiedName(psiParameter.type.canonicalText)
+            //内置了默认值，如果不匹配的话则生成默认值和import语句
+            val valueAndImport = CodeUtils.getDefaultValueAndDefaultImport(parameter.packagePath, parameter.className)
+            code.append(valueAndImport.first).append(if (i != parameters.size - 1) "," else "")
+            imports.add(valueAndImport.second)
         }
+        return CodeAndImports(code.toString(), imports)
     }
 }
 
 class GenerateAllBuilderWithGetter : BaseGenerateAllBuilder(GenCodeType.GETTER) {
-    override fun genCodeAndImportsFromField(field: PsiField, getters: List<ExtMethod>): CodeAndImports {
+    override fun genCodeAndImportsFromMethod(method: PsiMethod, getters: List<ExtMethod>): CodeAndImports {
         return getters.firstOrNull {
-            it.fieldName.equals(field.name, true) && it.psiType == field.type
+            it.fieldName.equals(method.name, true) && it.psiType == method.parameterList.parameters.first()!!.type
         }?.let {
             CodeAndImports("${it.caller}.get${it.fieldName}()")
         } ?: CodeAndImports()

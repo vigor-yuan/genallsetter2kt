@@ -21,7 +21,7 @@ data class SetGenerateDTO(
 data class BuilderGenerateDTO(
     val project: Project,
     val selectedElement: PsiElement,
-    val fields: List<PsiField>,
+    val methods: List<PsiMethod>,
     val splitText: String
 )
 
