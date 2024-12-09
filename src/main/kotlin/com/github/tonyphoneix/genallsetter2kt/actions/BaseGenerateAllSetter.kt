@@ -12,6 +12,7 @@ import com.github.tonyphoneix.genallsetter2kt.utils.PsiElementUtils
 import com.github.tonyphoneix.genallsetter2kt.write
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiDeclarationStatement
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiLocalVariable
@@ -26,8 +27,15 @@ import utils.PsiToolUtils
 abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeType) {
 
     override fun update(e: AnActionEvent) {
-        //Judgment of the visibility of the menu bar
-        e.presentation.isVisible = available(e)
+        if (ApplicationManager.getApplication().isDispatchThread) {
+            ApplicationManager.getApplication().executeOnPooledThread {
+                ApplicationManager.getApplication().runReadAction {
+                    e.presentation.isVisible = available(e)
+                }
+            }
+        } else {
+            e.presentation.isVisible = available(e)
+        }
     }
 
     override fun actionPerformed(e: AnActionEvent) {

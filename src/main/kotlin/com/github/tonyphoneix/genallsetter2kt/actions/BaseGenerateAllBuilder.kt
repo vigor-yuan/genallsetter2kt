@@ -10,8 +10,10 @@ import com.github.tonyphoneix.genallsetter2kt.utils.PsiClassUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiDocumentUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiElementUtils
 import com.github.tonyphoneix.genallsetter2kt.write
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiMethodCallExpression
@@ -76,8 +78,18 @@ abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(code
         return CodeAndImports(code.toString(), imports)
     }
 
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
     override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = available(e)
+        if (ApplicationManager.getApplication().isDispatchThread) {
+            ApplicationManager.getApplication().executeOnPooledThread {
+                ApplicationManager.getApplication().runReadAction {
+                    e.presentation.isVisible = available(e)
+                }
+            }
+        } else {
+            e.presentation.isVisible = available(e)
+        }
     }
 
     private fun available(e: AnActionEvent): Boolean {

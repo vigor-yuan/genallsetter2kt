@@ -17,7 +17,7 @@ abstract class BaseGenerate(val codeType: GenCodeType) : AnAction() {
         val parameters = mutableListOf<ParameterValue>()
         //1. Search for local variables 2. Search for parameters
         psiMethod.accept(object : JavaRecursiveElementWalkingVisitor() {
-            override fun visitElement(e: PsiElement?) {
+            override fun visitElement(e: PsiElement) {
                 if (e == element) {
                     stopWalking()
                     return
@@ -25,21 +25,21 @@ abstract class BaseGenerate(val codeType: GenCodeType) : AnAction() {
                 super.visitElement(e)
             }
 
-            override fun visitLocalVariable(variable: PsiLocalVariable?) {
+            override fun visitLocalVariable(variable: PsiLocalVariable) {
                 if (variable == element) {
                     stopWalking()
                     return
                 }
-                variable?.also { parameters.add(ParameterValue(it.name, it.type)) }
+                variable.also { parameters.add(ParameterValue(it.name, it.type)) }
                 super.visitLocalVariable(variable)
             }
 
-            override fun visitParameterList(list: PsiParameterList?) {
+            override fun visitParameterList(list: PsiParameterList) {
                 if (list == element) {
                     stopWalking()
                     return
                 }
-                list?.parameters?.forEach { parameters.add(ParameterValue(it.name, it.type)) }
+                list.parameters.forEach { parameters.add(ParameterValue(it.name, it.type)) }
                 super.visitParameterList(list)
             }
         })

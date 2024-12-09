@@ -1,120 +1,92 @@
-import io.gitlab.arturbosch.detekt.Detekt
-import org.jetbrains.changelog.closure
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    // Java support
     id("java")
-    // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.4.0"
-    // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "0.4.21"
-    // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
-    id("org.jetbrains.changelog") version "0.4.0"
-    // detekt linter - read more: https://detekt.github.io/detekt/kotlindsl.html
-    id("io.gitlab.arturbosch.detekt") version "1.11.0"
-    // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
-    id("org.jlleitschuh.gradle.ktlint") version "9.3.0"
+    id("org.jetbrains.kotlin.jvm") version "1.9.21"
+    id("org.jetbrains.intellij") version "1.16.0"
+    id("org.jetbrains.changelog") version "2.2.0"
 }
 
-// Import variables from gradle.properties file
-val pluginGroup: String by project
-val pluginName: String by project
-val pluginVersion: String by project
-val pluginSinceBuild: String by project
-val pluginUntilBuild: String by project
+group = project.property("pluginGroup").toString()
+version = project.property("pluginVersion").toString()
 
-val platformType: String by project
-val platformVersion: String by project
-val platformDownloadSources: String by project
-
-group = pluginGroup
-version = pluginVersion
-
-// Configure project's
-// dependencies
 repositories {
     mavenCentral()
-    jcenter()
 }
+
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.11.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
 }
 
-// Configure gradle-intellij-plugin plugin.
-// Read more: https://github.com/JetBrains/gradle-intellij-plugin
+// Configure IntelliJ Platform Plugin
 intellij {
-    pluginName = pluginName
-    version = platformVersion
-    type = platformType
-    downloadSources = platformDownloadSources.toBoolean()
-    updateSinceUntilBuild = false
-
-//  Plugin Dependencies:
-//  https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
-//
-    setPlugins("java")
-}
-
-// Configure detekt plugin.
-// Read more: https://detekt.github.io/detekt/kotlindsl.html
-detekt {
-    buildUponDefaultConfig = true
-
-    reports {
-        html.enabled = false
-        xml.enabled = false
-        txt.enabled = false
-    }
+    pluginName.set(project.property("pluginName").toString())
+    version.set(project.property("platformVersion").toString())
+    type.set(project.property("platformType").toString())
+    updateSinceUntilBuild.set(true)
+    plugins.set(listOf("java"))
 }
 
 tasks {
-    // Set the compatibility versions to 1.8
+    // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
-    }
-    listOf("compileKotlin", "compileTestKotlin").forEach {
-        getByName<KotlinCompile>(it) {
-            kotlinOptions.jvmTarget = "1.8"
-        }
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
 
-    withType<Detekt> {
-        jvmTarget = "1.8"
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "17"
     }
 
     patchPluginXml {
-        sinceBuild(pluginSinceBuild)
-        version(pluginVersion)
+        sinceBuild.set(project.property("pluginSinceBuild").toString())
 
-        // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        pluginDescription(
-                closure {
-                    File("./Description.md").readText().lines().run {
-                        val start = "<!-- Plugin description -->"
-                        val end = "<!-- Plugin description end -->"
+        // Extract the <!-- Plugin description --> section from Description.md
+        pluginDescription.set(File(projectDir, "Description.md").readText().lines().run {
+            val start = "<!-- Plugin description -->"
+            val end = "<!-- Plugin description end -->"
 
-                        if (!containsAll(listOf(start, end))) {
-                            throw GradleException("Plugin description section not found in README.md file:\n$start ... $end")
-                        }
-                        subList(indexOf(start) + 1, indexOf(end))
-                    }.joinToString("\n").run { markdownToHTML(this) }
-                }
-        )
+            if (!containsAll(listOf(start, end))) {
+                throw GradleException("Plugin description section not found in Description.md:\n$start ... $end")
+            }
+            subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
+        })
 
         // Get the latest available change notes from the changelog file
-        changeNotes(
-                closure {
-                    changelog.getLatest().toHTML()
-                }
-        )
+        changeNotes.set(File(projectDir, "CHANGELOG.md").readText().let { changelog ->
+            changelog.lines()
+                .dropWhile { !it.startsWith("## [") }
+                .takeWhile { !it.startsWith("## [") || it.startsWith("## [Unreleased]") }
+                .joinToString("\n")
+                .let(::markdownToHTML)
+        })
+    }
+
+    signPlugin {
+        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+        privateKey.set(System.getenv("PRIVATE_KEY"))
+        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
     }
 
     publishPlugin {
         dependsOn("patchChangelog")
-        token(System.getenv("PUBLISH_TOKEN"))
-        channels(pluginVersion.split('-').getOrElse(1) { "default" }.split('.').first())
+        token.set(System.getenv("PUBLISH_TOKEN"))
+        channels.set(listOf(project.property("pluginVersion").toString()
+            .split('-')
+            .getOrElse(1) { "default" }
+            .split('.')
+            .first()))
     }
+}
+
+// Disable configuration cache as it's not fully supported yet
+tasks.named("patchPluginXml") {
+    notCompatibleWithConfigurationCache("Plugin XML patching requires Project instance")
+}
+
+// Configure Gradle Changelog Plugin
+changelog {
+    version.set(project.property("pluginVersion").toString())
+    groups.set(emptyList())
 }

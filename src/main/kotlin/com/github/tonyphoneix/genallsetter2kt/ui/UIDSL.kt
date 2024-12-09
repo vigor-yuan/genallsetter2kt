@@ -215,14 +215,6 @@ fun button(text: String, clickListener: () -> Unit = {}): JButton {
 }
 
 /**
- * generate a icon component
- */
-fun icon(iconPath: String): JLabel {
-    val icon = IconLoader.getIcon(iconPath)
-    return JBLabel(icon)
-}
-
-/**
  * generate a link component
  */
 fun link(
