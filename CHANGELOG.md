@@ -6,9 +6,9 @@
 
 ### Changed
 
-- Improved IDE compatibility by removing upper version limit
-- Enhanced thread handling for better performance in newer IDE versions
-- Added backward compatibility for older IDE versions (since 183)
+- Updated minimum supported IDE version to 2023.1.7
+- Improved thread handling with ApplicationManager
+- Enhanced backward compatibility support
 
 ## 2.0.3 - 2024-12-09
 

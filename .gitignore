@@ -1,3 +1,7 @@
 .gradle
 .idea
 build
+*.jks
+*.p12
+*.key
+*.crt
