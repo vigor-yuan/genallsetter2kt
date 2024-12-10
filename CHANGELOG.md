@@ -6,7 +6,7 @@
 
 ### Changed
 - Added support for generating getter methods.
-- Added support for  
+- Generate Functions can now be called on method parameters as well.
 
 ## 2.0.4 - 2024-12-09
 

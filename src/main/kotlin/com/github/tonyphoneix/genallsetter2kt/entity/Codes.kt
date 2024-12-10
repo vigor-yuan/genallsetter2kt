@@ -49,5 +49,5 @@ data class ExtMethod(val caller: String, val fieldName: String, val psiType: Psi
 }
 
 enum class GenCodeType {
-    NONE, DEFAULT, GENERATE_ALL_GET_METHOD, INVOKE_ALL_GET_METHOD
+    NONE, DEFAULT, GENERATE_ALL_GET_METHOD
 }
