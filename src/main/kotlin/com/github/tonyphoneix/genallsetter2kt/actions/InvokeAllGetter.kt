@@ -14,6 +14,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTypesUtil
 import utils.PsiToolUtils
+import java.util.*
 
 /**
  * set method generator
@@ -81,7 +82,7 @@ class InvokeAllGetter : AnAction() {
                     // Calculate split text based on the method body's indentation
                     val methodIndent = PsiDocumentUtils.calculateSplitText(document, methodBody.textOffset)
                     // Add 4 spaces to the method indentation
-                    val statementIndent = methodIndent + "    "
+                    val statementIndent = "$methodIndent    "
                     GenerateContext(parameter, parameter.type, parameter.name, offset, statementIndent)
                 }
             }
@@ -133,11 +134,39 @@ class InvokeAllGetter : AnAction() {
      */
     private fun genCodeAndImports(setGenerateDTO: SetGenerateDTO): CodeAndImports {
         val code = StringBuilder()
+        val imports = mutableSetOf<String>()
+        
         setGenerateDTO.methods.forEach { m ->
-            //生成all get methods
-            code.append(setGenerateDTO.splitText).append(setGenerateDTO.variable).append('.').append(m.name)
-                .append("();")
+            val returnType = m.returnType
+            if (returnType != null) {
+                // 获取返回类型的规范名称（例如：java.lang.String -> String）
+                val typeName = returnType.presentableText
+                
+                // 根据方法名生成变量名
+                val varName = when {
+                    m.name.startsWith("get") -> m.name.substring(3)
+                        .replaceFirstChar { it.lowercase(Locale.getDefault()) }
+                    else -> m.name.replaceFirstChar { it.lowercase(Locale.getDefault()) }
+                }
+                
+                // 生成带变量声明的getter调用
+                code.append(setGenerateDTO.splitText)
+                    .append(typeName)
+                    .append(" ")
+                    .append(varName)
+                    .append(" = ")
+                    .append(setGenerateDTO.variable)
+                    .append('.')
+                    .append(m.name)
+                    .append("();")
+                
+                // 如果返回类型是完全限定名称，添加到imports
+                val canonicalText = returnType.canonicalText
+                if (canonicalText.contains(".") && !canonicalText.startsWith("java.lang.")) {
+                    imports.add(canonicalText)
+                }
+            }
         }
-        return CodeAndImports(code.toString(), emptySet())
+        return CodeAndImports(code.toString(), imports)
     }
 }

@@ -45,8 +45,11 @@ public class TestPluginDemo {
 
         public TestPluginDemo build() {
             TestPluginDemo test = new TestPluginDemo();
-            test.setName(name);
-            test.setAge(age);
+            String name = test.getName();
+            int age = test.getAge();
+            boolean male = test.isMale();
+            test.setName(this.name);
+            test.setAge(this.age);
             test.setMale(isMale);
             return test;
         }
