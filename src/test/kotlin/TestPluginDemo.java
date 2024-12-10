@@ -3,6 +3,7 @@ public class TestPluginDemo {
     private String name;
     private int age;
     private boolean isMale;
+    private Long year;
 
 
     public static void main(String[] args) {
@@ -47,10 +48,8 @@ public class TestPluginDemo {
             TestPluginDemo test = new TestPluginDemo();
             String name = test.getName();
             int age = test.getAge();
-            boolean male = test.isMale();
-            test.setName(this.name);
-            test.setAge(this.age);
-            test.setMale(isMale);
+            boolean isMale = test.isMale();
+            Long year = test.getYear();
             return test;
         }
     }
@@ -77,5 +76,13 @@ public class TestPluginDemo {
 
     public void setMale(boolean male) {
         isMale = male;
+    }
+
+    public Long getYear() {
+        return year;
+    }
+
+    public void setYear(Long year) {
+        this.year = year;
     }
 }
