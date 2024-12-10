@@ -55,7 +55,7 @@ abstract class BaseGenerateAllBuilder(codeType: GenCodeType) : BaseGenerate(code
     private fun genCodeAndImports(generateDTO: BuilderGenerateDTO): CodeAndImports {
         val code = StringBuilder()
         val imports = mutableSetOf<String>()
-        val getters = if (GenCodeType.GETTER == this.codeType) {
+        val getters = if (GenCodeType.GENERATE_ALL_GET_METHOD == this.codeType) {
             val parameters = searchParameters(generateDTO.selectedElement)
             GenerateSetterFromParametersDialog(generateDTO.project, parameters).run {
                 if (parameters.isEmpty() || !showAndGet()) {
@@ -133,7 +133,7 @@ class GenerateAllBuilderWithDefaultValue : BaseGenerateAllBuilder(GenCodeType.DE
     }
 }
 
-class GenerateAllBuilderWithGetter : BaseGenerateAllBuilder(GenCodeType.GETTER) {
+class GenerateAllBuilderWithGetter : BaseGenerateAllBuilder(GenCodeType.GENERATE_ALL_GET_METHOD) {
     override fun genCodeAndImportsFromMethod(method: PsiMethod, getters: List<ExtMethod>): CodeAndImports {
         return getters.firstOrNull {
             it.fieldName.equals(method.name, true) && it.psiType == method.parameterList.parameters.first()!!.type

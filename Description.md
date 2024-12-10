@@ -20,17 +20,18 @@
 
 #### Generate All Setter With Default Value
 
-`Generate All Setter` 不会帮你填写内容，如果你想自动填写默认值，你可以选择`Generate All Setter With Default Value`.
-
+`Generate All Setter` 不会帮你填写内容，如果你想自动填写默认值，你可以选择`Generate All Setter With Default Value`。
 ![set 默认值](https://tva1.sinaimg.cn/large/007S8ZIlgy1gideb8a62zg30go0kmjzi.gif)
 
 #### Generate All Setter And Getter
 
-插件还提供了从当前方法内部搜寻可以生成Get方法的参数或者是本地变量。勾选后，插件会在参数或本地变量中寻找同名同类型的成员变量并自动填充get方法，达到类似于BeanUtils的效果。这对于对象转换来说很有用
+插件提供了从当前方法内部搜寻可以生成Get方法的参数或者是本地变量的功能。勾选后，插件会在参数或本地变量中寻找同名同类型的成员变量并自动填充get方法，达到类似于BeanUtils的效果。这对于对象转换来说很有用
+
+从2.0.5版本开始，插件新增支持:
+- 生成带变量声明的getter方法（例如：`String name = test.getName();`)
+- 支持从方法参数中生成getter方法
 
 ![set and get](https://tva1.sinaimg.cn/large/007S8ZIlgy1gidefncktlg30go0kmnpd.gif)
-
-
 
 #### Generate All Builder
 

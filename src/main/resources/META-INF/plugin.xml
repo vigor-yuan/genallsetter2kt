@@ -48,6 +48,14 @@
             <add-to-group group-id="GenerateGroup" anchor="first"/>
         </action>
 
+        <action id="mars.InvokeAllGetter"
+                class="com.github.tonyphoneix.genallsetter2kt.actions.InvokeAllGetter"
+                text="Invoke All Getter"
+                description="Invoke all getter methods">
+            <add-to-group group-id="GenerateGroup" anchor="after"
+                          relative-to-action="mars.GenerateAllSetterWithGetter"
+            />
+        </action>
 
     </actions>
 

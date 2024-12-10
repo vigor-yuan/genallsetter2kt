@@ -1,28 +1,33 @@
 package com.github.tonyphoneix.genallsetter2kt.actions
 
 import com.github.tonyphoneix.genallsetter2kt.entity.CodeAndImports
-import com.github.tonyphoneix.genallsetter2kt.entity.ExtMethod
-import com.github.tonyphoneix.genallsetter2kt.entity.GenCodeType
 import com.github.tonyphoneix.genallsetter2kt.entity.SetGenerateDTO
-import com.github.tonyphoneix.genallsetter2kt.ui.GenerateSetterFromParametersDialog
-import com.github.tonyphoneix.genallsetter2kt.utils.CodeUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiClassUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiDocumentUtils
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiElementUtils
 import com.github.tonyphoneix.genallsetter2kt.write
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTypesUtil
-import com.intellij.psi.util.elementType
 import utils.PsiToolUtils
+import java.util.*
 
 /**
  * set method generator
  */
-abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeType) {
+class InvokeAllGetter : AnAction() {
+
+    data class GenerateContext(
+        val variable: PsiElement,
+        val type: PsiType,
+        val variableName: String,
+        val insertOffset: Int,
+        val splitText: String
+    )
 
     override fun update(e: AnActionEvent) {
         if (ApplicationManager.getApplication().isDispatchThread) {
@@ -46,14 +51,6 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
         val element = PsiElementUtils.getElement(editor, file)
         val localVar = PsiTreeUtil.getParentOfType(element, PsiLocalVariable::class.java)
         val parameter = PsiTreeUtil.getParentOfType(element, PsiParameter::class.java)
-
-        data class GenerateContext(
-            val variable: PsiElement,
-            val type: PsiType,
-            val variableName: String,
-            val insertOffset: Int,
-            val splitText: String
-        )
 
         val context = when {
             localVar != null -> {
@@ -85,21 +82,15 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
                     // Calculate split text based on the method body's indentation
                     val methodIndent = PsiDocumentUtils.calculateSplitText(document, methodBody.textOffset)
                     // Add 4 spaces to the method indentation
-                    val statementIndent = methodIndent + "    "
+                    val statementIndent = "$methodIndent    "
                     GenerateContext(parameter, parameter.type, parameter.name, offset, statementIndent)
                 }
             }
-
             else -> return
         }
 
-        val allSetMethods = PsiClassUtils.extractSetMethods(PsiTypesUtil.getPsiClass(context.type)!!)
-
-        genCodeAndImports(
-            SetGenerateDTO(
-                project, context.variable, allSetMethods, context.splitText, context.variableName
-            )
-        ).also {
+        val allGetMethods = PsiClassUtils.extractGetMethod(PsiTypesUtil.getPsiClass(context.type)!!)
+        genCodeAndImports(SetGenerateDTO(project, context.variable, allGetMethods, context.splitText, context.variableName)).also {
             document.write(project) { insertString(context.insertOffset, it.code) }
             PsiToolUtils.addImportToFile(project, file, document, it.imports)
         }
@@ -109,7 +100,7 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
      * Determine whether the menu can be displayed
      * 1. Get the element at the cursor
      * 2. Determine whether it is a local variable && whether the parent class is a declaration statement
-     * 3. Get the class file according to the type and check whether the class contains the set method
+     * 3. Get the class file according to the type and check whether the class contains the GET method
      */
     private fun available(e: AnActionEvent): Boolean {
         val editor = e.getData(PlatformDataKeys.EDITOR)
@@ -117,19 +108,21 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
         if (editor == null || file == null) {
             return false
         }
+        
         val element = PsiElementUtils.getElement(editor, file)
+        
         // Check for local variable
         val localVar = PsiTreeUtil.getParentOfType(element, PsiLocalVariable::class.java)
         if (localVar != null && localVar.parent is PsiDeclarationStatement) {
-            return PsiTypesUtil.getPsiClass(localVar.type)?.let { PsiClassUtils.checkClassHasValidSetMethod(it) }
-                ?: false
+            return PsiTypesUtil.getPsiClass(localVar.type)?.let { PsiClassUtils.checkClassHasValidGetMethod(it) } ?: false
         }
+        
         // Check for method parameter
         val parameter = PsiTreeUtil.getParentOfType(element, PsiParameter::class.java)
         if (parameter != null) {
-            return PsiTypesUtil.getPsiClass(parameter.type)?.let { PsiClassUtils.checkClassHasValidSetMethod(it) }
-                ?: false
+            return PsiTypesUtil.getPsiClass(parameter.type)?.let { PsiClassUtils.checkClassHasValidGetMethod(it) } ?: false
         }
+        
         return false
     }
 
@@ -141,74 +134,39 @@ abstract class BaseGenerateAllSetter(codeType: GenCodeType) : BaseGenerate(codeT
      */
     private fun genCodeAndImports(setGenerateDTO: SetGenerateDTO): CodeAndImports {
         val code = StringBuilder()
-        //收集import语句
         val imports = mutableSetOf<String>()
-        val getters = if (GenCodeType.GENERATE_ALL_GET_METHOD == this.codeType) {
-            val parameters = searchParameters(setGenerateDTO.selectedElement)
-            GenerateSetterFromParametersDialog(setGenerateDTO.project, parameters).run {
-                if (parameters.isEmpty() || !showAndGet()) {
-                    return CodeAndImports()
-                }
-                choices
-            }
-        } else emptyList()
+        
         setGenerateDTO.methods.forEach { m ->
-            //生成set赋值代码
-            code.append(setGenerateDTO.splitText).append(setGenerateDTO.variable).append('.').append(m.name).append("(")
-            //解析方法的参数列表
-            genCodeAndImportsFromMethod(m, getters.flatMap { it.getAllGetMethods() }).also {
-                //添加代码
-                if (it.code.isNotBlank()) code.append(it.code)
-                //添加imports
-                imports.addAll(it.imports.filter { i -> CodeUtils.isNeedToDeclareClasses(i) })
+            val returnType = m.returnType
+            if (returnType != null) {
+                // 获取返回类型的规范名称（例如：java.lang.String -> String）
+                val typeName = returnType.presentableText
+                
+                // 根据方法名生成变量名
+                val varName = when {
+                    m.name.startsWith("get") -> m.name.substring(3)
+                        .replaceFirstChar { it.lowercase(Locale.getDefault()) }
+                    else -> m.name.replaceFirstChar { it.lowercase(Locale.getDefault()) }
+                }
+                
+                // 生成带变量声明的getter调用
+                code.append(setGenerateDTO.splitText)
+                    .append(typeName)
+                    .append(" ")
+                    .append(varName)
+                    .append(" = ")
+                    .append(setGenerateDTO.variable)
+                    .append('.')
+                    .append(m.name)
+                    .append("();")
+                
+                // 如果返回类型是完全限定名称，添加到imports
+                val canonicalText = returnType.canonicalText
+                if (canonicalText.contains(".") && !canonicalText.startsWith("java.lang.")) {
+                    imports.add(canonicalText)
+                }
             }
-            code.append(");")
         }
         return CodeAndImports(code.toString(), imports)
-    }
-
-    abstract fun genCodeAndImportsFromMethod(method: PsiMethod, getters: List<ExtMethod>): CodeAndImports
-}
-
-class GenerateAllSetterNoDefaultValue : BaseGenerateAllSetter(GenCodeType.NONE) {
-
-    override fun genCodeAndImportsFromMethod(
-        method: PsiMethod, getters: List<ExtMethod>
-    ): CodeAndImports {
-        return CodeAndImports()
-    }
-}
-
-class GenerateAllSetterWithDefaultValue : BaseGenerateAllSetter(GenCodeType.DEFAULT) {
-
-    override fun genCodeAndImportsFromMethod(
-        method: PsiMethod, getters: List<ExtMethod>
-    ): CodeAndImports {
-        val imports = mutableSetOf<String>()
-        val code = StringBuilder()
-        val parameters = method.parameterList.parameters
-        parameters.forEachIndexed { i, psiParameter ->
-            //解析参数类名称
-            val parameter = PsiToolUtils.extraParameterFromFullyQualifiedName(psiParameter.type.canonicalText)
-            //内置了默认值，如果不匹配的话则生成默认值和import语句
-            val valueAndImport = CodeUtils.getDefaultValueAndDefaultImport(parameter.packagePath, parameter.className)
-            code.append(valueAndImport.first).append(if (i != parameters.size - 1) "," else "")
-            imports.add(valueAndImport.second)
-        }
-        return CodeAndImports(code.toString(), imports)
-    }
-}
-
-class GenerateAllSetterWithGetter : BaseGenerateAllSetter(GenCodeType.GENERATE_ALL_GET_METHOD) {
-
-    override fun genCodeAndImportsFromMethod(
-        method: PsiMethod, getters: List<ExtMethod>
-    ): CodeAndImports {
-        val extSetMethod = ExtMethod.extSetMethod(psiMethod = method) ?: return CodeAndImports()
-        return getters.firstOrNull {
-            it.fieldName == extSetMethod.fieldName && it.psiType == extSetMethod.psiType
-        }?.let {
-            CodeAndImports("${it.caller}.get${it.fieldName}()")
-        } ?: CodeAndImports()
     }
 }
