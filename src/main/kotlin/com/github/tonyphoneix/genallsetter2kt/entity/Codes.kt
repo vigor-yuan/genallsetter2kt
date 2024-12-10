@@ -3,7 +3,6 @@ package com.github.tonyphoneix.genallsetter2kt.entity
 import com.github.tonyphoneix.genallsetter2kt.utils.PsiClassUtils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiField
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiType
 
@@ -50,5 +49,5 @@ data class ExtMethod(val caller: String, val fieldName: String, val psiType: Psi
 }
 
 enum class GenCodeType {
-    NONE, DEFAULT, GETTER
+    NONE, DEFAULT, GENERATE_ALL_GET_METHOD, INVOKE_ALL_GET_METHOD
 }

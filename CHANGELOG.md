@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.0.5 - 2024-12-10
+
+### Changed
+- Added support for generating getter methods.
+- Added support for  
+
 ## 2.0.4 - 2024-12-09
 
 ### Changed
