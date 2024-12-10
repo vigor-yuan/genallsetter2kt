@@ -5,6 +5,7 @@
 ## 2.0.5 - 2024-12-10
 
 ### Changed
+
 - Added support for generating getter methods.
 - Generate Functions can now be called on method parameters as well.
 
