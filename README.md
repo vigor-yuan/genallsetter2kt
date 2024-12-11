@@ -39,11 +39,6 @@ If you want to call all Set methods of a Java object, you can do so by invoking 
 #### Generate All Setter And Getter
 
 The plugin provides the ability to search for parameters or local variables within the current method that can generate Get methods. When checked, the plugin will search for member variables with the same name and type in parameters or local variables and automatically fill in the get method, achieving a similar effect to BeanUtils. This is useful for object conversion.
-
-Starting from version 2.0.5, the plugin now supports:
-- Generating getter methods with variable declarations (e.g., `String name = test.getName();`)
-- Generating getters from method parameters as well as local variables
-
 ![set and get](https://tva1.sinaimg.cn/large/007S8ZIlgy1gidefncktlg30go0kmnpd.gif)
 
 #### Generate All Builder
@@ -51,6 +46,11 @@ Starting from version 2.0.5, the plugin now supports:
 In addition to set methods, the plugin also adds support for the common Lombok @Builder chained assignment. You only need to invoke the Generate menu on `Object.builder()` and select the functionality you want.
 
 ![ezgif.com-video-to-gif](https://tva1.sinaimg.cn/large/007S8ZIlgy1gidejc9wr1g30go0km4l3.gif)
+
+#### change log
+Starting from version 2.0.5, the plugin now supports:
+- Generating getter methods with variable declarations (e.g., `String name = test.getName();`)
+- Generating getters from method parameters as well as local variables
 
 
 
