@@ -47,7 +47,7 @@ In addition to set methods, the plugin also adds support for the common Lombok @
 
 ![ezgif.com-video-to-gif](https://tva1.sinaimg.cn/large/007S8ZIlgy1gidejc9wr1g30go0km4l3.gif)
 
-#### change log
+### Change log
 Starting from version 2.0.5, the plugin now supports:
 - Generating getter methods with variable declarations (e.g., `String name = test.getName();`)
 - Generating getters from method parameters as well as local variables
