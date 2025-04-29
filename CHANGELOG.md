@@ -1,23 +1,31 @@
-# GenALlSetter Changelog
+# GenAllSetter Changelog
 
 ## [Unreleased]
 
+## [2.0.7] - 2025-04-29
+
+### Changed
+- Updated plugin description to English for better international user experience
+- Enhanced documentation clarity and readability
+- Improved changelog formatting and organization
+
 ## [2.0.6] - 2025-04-28
 
-- Changelog update - `v2.0.5` by @github-actions in https://github.com/vigor-yuan/genallsetter2kt/pull/10
-- @github-actions made their first contribution in https://github.com/vigor-yuan/genallsetter2kt/pull/10
+### Changed
+- Updated plugin configuration for IntelliJ IDEA 2025.1
+- Improved plugin dependencies management
+- Enhanced compatibility with latest IDE versions
 
 ## [2.0.5] - 2024-12-10
 
-### Changed
-
-- Added support for generating getter methods.
-- Generate Functions can now be called on method parameters as well.
+### Added
+- Support for generating getter methods with variable declarations
+- Extended getter generation to work with method parameters
+- Improved code generation capabilities
 
 ## [2.0.4] - 2024-12-09
 
 ### Changed
-
 - Updated minimum supported IDE version to 2023.1.7
 - Improved thread handling with ApplicationManager
 - Enhanced backward compatibility support
@@ -25,43 +33,39 @@
 ## [2.0.3] - 2024-12-09
 
 ### Changed
-
-- Determine the plug-in icon, add description information
+- Added plugin icon and description information
+- Improved plugin documentation
 
 ## [2.0.1] - 2020-12-01
 
-### fixed
-
-- fix type forced transfer exception
+### Fixed
+- Resolved type casting exceptions
 
 ### Added
-
-- Add icon and dark style icon
+- Introduced plugin icon with dark theme support
 
 ### Changed
-
-- Adjust description information
+- Updated plugin description and documentation
 
 ## [2.0.0] - 2020-09-03
 
 ### Added
-
-- Supports searching for objects that can generate get methods from within methods, and filling them into set assignment statements.
+- Smart context detection: Ability to search for and utilize getter methods from within the current method scope
+- Improved setter generation with context-aware value filling
 
 ### Changed
-
-- Abandon Java, use Kotlin to rewrite the plug-in
-- Optimized the naming of action, more humane
+- Complete rewrite in Kotlin for better maintenance and performance
+- Improved action naming for better user experience
 
 ## [1.2.1] - 2020-03-21
 
 ### Added
+- Automatic generation of all setter methods
+- Support for default value generation with setter methods
+- Integration with Lombok's @Builder pattern for chain assignments
 
-- All set methods of the object can be called automatically
-- Support to fill in default values ​​while generating set method
-- Support Lombok's @Builder chain assignment
-
-[Unreleased]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.6...HEAD
+[Unreleased]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.7...HEAD
+[2.0.7]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.6...v2.0.7
 [2.0.6]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.4...v2.0.5
 [2.0.4]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.3...v2.0.4

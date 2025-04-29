@@ -1,7 +1,48 @@
 <idea-plugin>
     <id>com.mars.genAllSetter.genAllSetter</id>
     <name>GenAllSetter</name>
-    <vendor email="13093687239@163.com">Mars</vendor>
+    <vendor email="13093687239@163.com" url="https://github.com/TonyPhoneix/genallsetter2kt">Mars</vendor>
+
+    <description><![CDATA[
+        <h2>GenAllSetter - Java Object Setter/Builder Generator</h2>
+        
+        A powerful plugin for quickly generating and invoking all Set methods or Builder methods of a Java object. 
+        Say goodbye to manually writing repetitive assignment statements, prevent omissions, and reduce workload.
+        
+        <h3>Key Features:</h3>
+        <ul>
+            <li>Generate all setter methods with optional default values</li>
+            <li>Generate setter methods with corresponding getter values from context</li>
+            <li>Support for Lombok @Builder pattern with chained assignments</li>
+            <li>Generate getter methods with variable declarations</li>
+            <li>Smart context-aware parameter and local variable detection</li>
+        </ul>
+
+        <h3>Usage:</h3>
+        <p>Access via Generate menu (⌘N on macOS, Alt+Insert on Windows) and choose from:</p>
+        <ul>
+            <li><b>Generate All Setter</b> - Basic setter generation</li>
+            <li><b>Generate All Setter With Default Value</b> - Setters with default values</li>
+            <li><b>Generate All Setter With Getter</b> - Smart setter generation using context variables</li>
+            <li><b>Generate All Builder</b> - Support for Lombok builder pattern</li>
+        </ul>
+    ]]></description>
+
+    <change-notes><![CDATA[
+        <h3>2.0.6</h3>
+        <ul>
+            <li>Added support for IntelliJ IDEA 2025.1</li>
+            <li>Updated plugin configuration and dependencies</li>
+            <li>Improved compatibility with latest IDE versions</li>
+        </ul>
+
+        <h3>2.0.5</h3>
+        <ul>
+            <li>Added support for generating getter methods with variable declarations</li>
+            <li>Enhanced getter generation from both method parameters and local variables</li>
+            <li>Improved code generation reliability</li>
+        </ul>
+    ]]></change-notes>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
