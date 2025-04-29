@@ -2,13 +2,6 @@
 
 ## [Unreleased]
 
-## [2.0.7] - 2025-04-29
-
-### Changed
-- Updated plugin description to English for better international user experience
-- Enhanced documentation clarity and readability
-- Improved changelog formatting and organization
-
 ## [2.0.6] - 2025-04-28
 
 ### Changed
@@ -64,8 +57,7 @@
 - Support for default value generation with setter methods
 - Integration with Lombok's @Builder pattern for chain assignments
 
-[Unreleased]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.7...HEAD
-[2.0.7]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.6...v2.0.7
+[Unreleased]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.6...HEAD
 [2.0.6]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.4...v2.0.5
 [2.0.4]: https://github.com/tonyphoneix/genallsetter2kt/compare/v2.0.3...v2.0.4

@@ -4,27 +4,49 @@
     <vendor email="13093687239@163.com" url="https://github.com/TonyPhoneix/genallsetter2kt">Mars</vendor>
 
     <description><![CDATA[
-        <h2>GenAllSetter - Java Object Setter/Builder Generator</h2>
-        
-        A powerful plugin for quickly generating and invoking all Set methods or Builder methods of a Java object. 
-        Say goodbye to manually writing repetitive assignment statements, prevent omissions, and reduce workload.
-        
-        <h3>Key Features:</h3>
+        Generate setter methods, builder chains, and getter methods for Java objects with intelligent context detection.
+
+        <p>Streamline Java object initialization by automatically generating setter methods, builder patterns, and getter methods. 
+        Integrates with IntelliJ IDEA's code generation system to provide quick access through the Generate menu.</p>
+
+        <b>Key Features:</b>
         <ul>
-            <li>Generate all setter methods with optional default values</li>
-            <li>Generate setter methods with corresponding getter values from context</li>
-            <li>Support for Lombok @Builder pattern with chained assignments</li>
+            <li>Generate setter methods for all fields with a single action</li>
+            <li>Automatically populate setters with context-aware values from current scope</li>
+            <li>Create builder pattern chains for Lombok @Builder annotated classes</li>
             <li>Generate getter methods with variable declarations</li>
-            <li>Smart context-aware parameter and local variable detection</li>
+            <li>Smart detection of method parameters and local variables</li>
         </ul>
 
-        <h3>Usage:</h3>
-        <p>Access via Generate menu (⌘N on macOS, Alt+Insert on Windows) and choose from:</p>
+        <b>Quick Access:</b>
         <ul>
-            <li><b>Generate All Setter</b> - Basic setter generation</li>
-            <li><b>Generate All Setter With Default Value</b> - Setters with default values</li>
-            <li><b>Generate All Setter With Getter</b> - Smart setter generation using context variables</li>
-            <li><b>Generate All Builder</b> - Support for Lombok builder pattern</li>
+            <li>macOS: <kbd>⌘</kbd> + <kbd>N</kbd></li>
+            <li>Windows/Linux: <kbd>Alt</kbd> + <kbd>Insert</kbd></li>
+        </ul>
+
+        <b>Feature Demonstrations:</b>
+
+        <p><b>1. Generate All Setter</b></p>
+        <p>Generate all setter methods with a single action:</p>
+        <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gide98s6wng30go0km0yp.gif" alt="Generate All Setter Demo"></p>
+
+        <p><b>2. Generate All Setter With Default Value</b></p>
+        <p>Automatically fill in default values for all setters:</p>
+        <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gideb8a62zg30go0kmjzi.gif" alt="Generate All Setter With Default Value Demo"></p>
+
+        <p><b>3. Generate All Setter With Getter</b></p>
+        <p>Smart context detection for getter method generation:</p>
+        <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gidefncktlg30go0kmnpd.gif" alt="Generate All Setter With Getter Demo"></p>
+
+        <p><b>4. Generate All Builder</b></p>
+        <p>Support for Lombok @Builder pattern with chained assignments:</p>
+        <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gidejc9wr1g30go0km4l3.gif" alt="Generate All Builder Demo"></p>
+
+        <b>Resources:</b>
+        <ul>
+            <li><a href="https://github.com/TonyPhoneix/genallsetter2kt">GitHub Repository</a></li>
+            <li><a href="https://github.com/TonyPhoneix/genallsetter2kt/issues">Issue Tracker</a></li>
+            <li><a href="https://github.com/TonyPhoneix/genallsetter2kt/blob/master/CHANGELOG.md">Changelog</a></li>
         </ul>
     ]]></description>
 
@@ -33,15 +55,17 @@
         <ul>
             <li>Added support for IntelliJ IDEA 2025.1</li>
             <li>Updated plugin configuration and dependencies</li>
-            <li>Improved compatibility with latest IDE versions</li>
+            <li>Enhanced compatibility with latest IDE versions</li>
         </ul>
 
         <h3>2.0.5</h3>
         <ul>
             <li>Added support for generating getter methods with variable declarations</li>
-            <li>Enhanced getter generation from both method parameters and local variables</li>
+            <li>Extended getter generation to work with method parameters</li>
             <li>Improved code generation reliability</li>
         </ul>
+
+        <p>See the <a href="https://github.com/TonyPhoneix/genallsetter2kt/blob/master/CHANGELOG.md">full changelog</a> for more details.</p>
     ]]></change-notes>
 
     <!-- Product and plugin compatibility requirements -->
